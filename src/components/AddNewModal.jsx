@@ -4,12 +4,14 @@ import { useItems } from '../context/ItemsContext';
 import { useEmployees } from '../context/EmployeesContext';
 import { useCustomers } from '../context/CustomersContext';
 import { usePricing } from '../context/PricingContext';
+import { useOffers } from '../context/OffersContext';
 
 import BranchForm from './forms/BranchForm';
 import ItemForm from './forms/ItemForm';
 import EmployeeForm from './forms/EmployeeForm';
 import CustomerForm from './forms/CustomerForm';
 import PricingForm from './forms/PricingForm';
+import OfferForm from './forms/OfferForm';
 
 // كل تاب بيعرف: اسمه، أيقونته، وأسماء أفعال الإضافة/التعديل بتاعته
 // (asAdd/asUpdate) - ده اللي بيخلي المودال الواحد ده "يعرف" يكلم أي Context صح
@@ -19,6 +21,7 @@ const tabs = [
   { key: 'employee', label: 'Employee', icon: 'fa-user-gear' },
   { key: 'customer', label: 'Customer', icon: 'fa-users' },
   { key: 'price', label: 'Price', icon: 'fa-tag' },
+  { key: 'offer', label: 'Offer', icon: 'fa-percent' },
 ];
 
 export default function AddNewModal() {
@@ -28,6 +31,7 @@ export default function AddNewModal() {
   const employeesCtx = useEmployees();
   const customersCtx = useCustomers();
   const pricingCtx = usePricing();
+  const offersCtx = useOffers();
 
   if (!isOpen) return null;
 
@@ -68,6 +72,12 @@ export default function AddNewModal() {
           Form: PricingForm,
           onSubmit: (data) => isEditing ? pricingCtx.updatePricingItem(editing.data.id, data) : pricingCtx.addPricingItem(data),
         };
+      case 'offer':
+        return {
+          title: 'Offer',
+          Form: OfferForm,
+          onSubmit: (data) => isEditing ? offersCtx.updateOffer(editing.data.id, data) : offersCtx.addOffer(data),
+        };
       default:
         return null;
     }
@@ -75,10 +85,10 @@ export default function AddNewModal() {
 
   const config = getTabConfig(currentTab);
 
- async function handleSubmit(data) {
-  await config.onSubmit(data);
-  close();
-}
+  async function handleSubmit(data) {
+    await config.onSubmit(data);
+    close();
+  }
   return (
     <div className="modal-overlay" onClick={close}>
       <div className="modal-dialog modal-dialog-centered bg-light p-2 rounded-3" style={{ maxWidth: 460 }} onClick={(e) => e.stopPropagation()}>

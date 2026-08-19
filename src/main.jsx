@@ -9,6 +9,7 @@ import { ItemsProvider } from './context/ItemsContext'
 import { EmployeesProvider } from './context/EmployeesContext'
 import { CustomersProvider } from './context/CustomersContext'
 import { PricingProvider } from './context/PricingContext'
+import { OffersProvider } from './context/OffersContext'
 
 // كل Provider بيلف اللي بعده - الترتيب مش مهم هنا لأن الـ contexts دي
 // مش معتمدة على بعض، كل واحد مستقل بذاته
@@ -20,7 +21,9 @@ createRoot(document.getElementById('root')).render(
           <EmployeesProvider>
             <CustomersProvider>
               <PricingProvider>
-                <App />
+                <OffersProvider>
+                  <App />
+                </OffersProvider>
               </PricingProvider>
             </CustomersProvider>
           </EmployeesProvider>
