@@ -1,0 +1,173 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --brand-dark: #16342c;
+  --brand-green: #1f6b4d;
+  --brand-light: #e5f0ea;
+  --fs-xsmall: 0.75rem;
+  --fs-small: 0.875rem;
+  --sidebar-width: 240px;
+}
+
+.bg-brand-dark { background-color: var(--brand-dark) !important; }
+.bg-brand-green { background-color: var(--brand-green) !important; }
+.bg-brand-light { background-color: var(--brand-light) !important; }
+.text-brand-green { color: var(--brand-green) !important; }
+.fs-sm { font-size: var(--fs-small); }
+.fs-xsm { font-size: var(--fs-xsmall); }
+.w-fit { width: fit-content; }
+
+.style-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+  border-radius: 15px;
+}
+
+/* ==================== SIDEBAR + RWD FIX ====================
+   المشكلة الأصلية: .sidebar كانت position: fixed بعرض ثابت 240px،
+   و main كان عليه margin-left: 240px ثابت من غير أي media query.
+   نتيجة: على أي شاشة أضيق من كذا، السايدبار كانت بتفضل واخدة مكانها
+   وتدخل على المحتوى (overlap) لأن الـ margin مكنش بيتغير.
+
+   الحل: على الديسكتوب (>= 992px) نفس السلوك القديم بالظبط (sidebar
+   ثابتة جنب المحتوى). على الموبايل/التابلت، السايدبار بتتحول لـ
+   "drawer": متخبية برا الشاشة بـ translateX(-100%)، وبتظهر فوق
+   المحتوى (مش جنبه) لما تتفتح، مع خلفية سودة شفافة تقفلها لو دُست عليها. */
+
+.sidebar {
+  width: var(--sidebar-width);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1040;
+  transition: transform 0.25s ease;
+}
+
+.mobile-topbar {
+  display: none; /* مخفي على الديسكتوب - السايدبار ظاهرة أصلاً */
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
+.main-content {
+  margin-left: var(--sidebar-width);
+}
+
+@media (max-width: 991.98px) {
+  .sidebar {
+    transform: translateX(-100%); /* متخبية برا الشاشة شمال */
+  }
+
+  .sidebar.sidebar-open {
+    transform: translateX(0); /* بتنزلق تدخل من غير ما تزنق حاجة */
+  }
+
+  .mobile-topbar {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1035; /* تحت السايدبار وفوق كل حاجة تانية */
+  }
+
+  .main-content {
+    margin-left: 0; /* المحتوى بياخد العرض كله، السايدبار بقت overlay مش جنبه */
+  }
+}
+/* ================================================================ */
+
+.nav-link.active {
+  background-color: var(--brand-light);
+  color: var(--brand-green) !important;
+}
+
+.revenueChart {
+  height: 400px;
+}
+
+.filter-btn {
+  border: none;
+  background: #fff;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #444;
+}
+.filter-btn.active {
+  background: var(--brand-dark);
+  color: #fff;
+}
+
+.progress-target {
+  height: 6px;
+  border-radius: 4px;
+}
+
+.filter-btn-sub {
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 13px;
+  color: #555;
+}
+.filter-btn-sub.active {
+  background: var(--brand-light);
+  border-color: var(--brand-green);
+  color: var(--brand-green);
+}
+
+/* ==================== ADD/EDIT MODAL ==================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.entity-tab {
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.entity-tab.active {
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
+  color: #fff;
+}
+
+.row-action-icon {
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.row-action-icon:hover {
+  opacity: 0.6;
+}
