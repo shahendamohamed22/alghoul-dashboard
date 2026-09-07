@@ -1,7 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import baseUrl from '../data/api';
-import token from '../data/token';
-import axios from 'axios';
+import apiClient from '../data/apiClient';
 
 function mapBranch(b) {
   return {
@@ -10,11 +8,30 @@ function mapBranch(b) {
     address: b.address,
     city: b.city,
     revenue: b.currentMonthRevenue,
+    lastMonthRevenue: b.lastMonthRevenue,
     growth: b.revenueChangePercentage ?? 0,
     target: b.targetAchievementPercentage,
     orders: b.ordersCount,
     customers: b.customersCount,
+    revenueTarget: b.revenueTarget,
+    isActive: b.isActive,
     status: b.isOpenNow ? 'Open' : 'Closed',
+  };
+}
+
+// The "basic" shape (plain GET /api/branch and GET /api/branch/{id}) is
+// smaller than the stats shape - just profile fields, no revenue/orders
+function mapBranchBasic(b) {
+  return {
+    id: b.id,
+    name: b.name,
+    address: b.address,
+    city: b.city,
+    phoneNumber: b.phoneNumber,
+    openingTime: b.openingTime,
+    closingTime: b.closingTime,
+    isActive: b.isActive,
+    revenueTarget: b.revenueTarget,
   };
 }
 
@@ -25,75 +42,76 @@ export function BranchesProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    axios
-      .get(`${baseUrl}/api/branches/stats`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        const mapped = res.data.map(mapBranch);
-        setBranches(mapped);
-        console.log(res.data);
+  function refreshBranches() {
+    return apiClient.get('/api/branch/stats').then((res) => setBranches(res.data.map(mapBranch)));
+  }
 
-      })
+  useEffect(() => {
+    refreshBranches()
       .catch((err) => setError(err))
       .finally(() => setLoading(false));
   }, []);
 
-  // الدالتين الجداد - كل واحدة بترجع البيانات مباشرة (Promise)
-  // بدل ما تخزنها في state هنا، عشان الصفحة نفسها هي اللي هتقرر تستخدمها إمتى
+  // Search + IsOpen + SortBy + SortDir are all just query params on the
+  // same /stats endpoint, so one function covers all of them combined
+  async function fetchFiltered({ search, isOpen, sortBy, sortDir } = {}) {
+    const params = {};
+    if (search) params.Search = search;
+    if (isOpen !== undefined && isOpen !== null) params.IsOpen = isOpen;
+    if (sortBy) params.SortBy = sortBy;
+    if (sortDir) params.SortDir = sortDir;
+    const res = await apiClient.get('/api/branch/stats', { params });
+    return res.data.map(mapBranch);
+  }
+
   async function fetchTopPerforming() {
-    const res = await axios.get(`${baseUrl}/api/branches/top-performers`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    });
-    console.log("Top Performers Response:", res);
-    console.log("Top Performers Data:", res.data);
+    const res = await apiClient.get('/api/branch/top-performers');
     return res.data.map(mapBranch);
   }
 
   async function fetchNeedsAttention() {
-    const res = await axios.get(`${baseUrl}/api/branches/needs-attention`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    });
-    console.log("Needs Attention Response:", res);
-    console.log("Needs Attention Data:", res.data);
-
+    const res = await apiClient.get('/api/branch/needs-attention');
     return res.data.map(mapBranch);
   }
 
-  async function searchBranches(keyword) {
-  const res = await axios.get(`${baseUrl}/api/branches/search`, {
-    params: { keyword: keyword },
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  console.log("search Response:", res);
-    console.log("search Data:", res.data);
-  return res.data.map(mapBranch);
-}
-
-  function addBranch(data) {
-    setBranches((prev) => [...prev, { id: Date.now(), ...data }]);
+  // Plain list, no auth needed per the doc - lighter than /stats
+  async function fetchAllBasic() {
+    const res = await apiClient.get('/api/branch');
+    return res.data.map(mapBranchBasic);
   }
 
-  function updateBranch(id, data) {
-    setBranches((prev) => prev.map((b) => (b.id === id ? { ...b, ...data } : b)));
+  async function fetchBranchById(id) {
+    const res = await apiClient.get(`/api/branch/${id}`);
+    return mapBranchBasic(res.data);
   }
 
-  function deleteBranch(id) {
-    setBranches((prev) => prev.filter((b) => b.id !== id));
+  async function fetchBranchStats(id) {
+    const res = await apiClient.get(`/api/branch/${id}/stats`);
+    return mapBranch(res.data);
+  }
+
+  async function addBranch(data) {
+    await apiClient.post('/api/branch', data);
+    await refreshBranches();
+  }
+
+  async function updateBranch(id, data) {
+    await apiClient.put(`/api/branch/${id}`, data);
+    await refreshBranches();
+  }
+
+  async function toggleStatus(id) {
+    await apiClient.patch(`/api/branch/${id}/toggle-status`);
+    await refreshBranches();
   }
 
   const value = {
-    branches, loading, error,
-    fetchTopPerforming, fetchNeedsAttention,searchBranches,
-    addBranch, updateBranch, deleteBranch,
-  }; return <BranchesContext.Provider value={value}>{children}</BranchesContext.Provider>;
+    branches, loading, error, refreshBranches,
+    fetchFiltered, fetchTopPerforming, fetchNeedsAttention,
+    fetchAllBasic, fetchBranchById, fetchBranchStats,
+    addBranch, updateBranch, toggleStatus,
+  };
+  return <BranchesContext.Provider value={value}>{children}</BranchesContext.Provider>;
 }
 
 export function useBranches() {

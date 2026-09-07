@@ -1,14 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import baseUrl from '../data/api';
-import token from '../data/token';
+import apiClient from '../data/apiClient';
 
-const authHeader = { headers: { Authorization: `Bearer ${token}` } };
-
-export const roleMap = { Manager: 0, Cashier: 1, Stocker: 2, Butcher: 3 };
+export const roleMap = { Manager: 0, Cashier: 1, Stocker: 2, Cleaner: 3 };
 export const statusMap = { Active: 0, OnLeave: 1, Inactive: 2 };
-// بترجم شكل بيانات الموظف الجاي من الـ API لنفس الأسماء اللي
-// صفحة Employees والجدول متعودين عليها (name, branch, start, end...)
+
 function mapEmployee(e) {
   return {
     id: e.id,
@@ -18,10 +13,12 @@ function mapEmployee(e) {
     phone: e.phoneNumber,
     role: e.role,
     branch: e.branchName,
-    start: e.workStart?.slice(0, 5), // "09:00:00" -> "09:00"
+    start: e.workStart?.slice(0, 5),
     end: e.workEnd?.slice(0, 5),
     status: e.status,
     isOnShift: e.isOnShift,
+    tenureYears: e.tenureYears,
+    isActive: e.isActive,
   };
 }
 
@@ -32,57 +29,61 @@ export function EmployeesProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  function refreshEmployees() {
+    return apiClient.get('/api/employee').then((res) => setEmployees(res.data.map(mapEmployee)));
+  }
+
   useEffect(() => {
-    axios
-      .get(`${baseUrl}/api/employees`, authHeader)
-      .then((res) => setEmployees(res.data.map(mapEmployee)))
+    refreshEmployees()
       .catch((err) => setError(err))
       .finally(() => setLoading(false));
   }, []);
 
-
   async function fetchByBranch(branchId) {
-    const res = await axios.get(`${baseUrl}/api/employees/branch/${branchId}`, authHeader);
+    const res = await apiClient.get(`/api/employee/branch/${branchId}`);
     return res.data.map(mapEmployee);
   }
 
   async function fetchByRole(roleId) {
-    const res = await axios.get(`${baseUrl}/api/employees/role/${roleId}`, authHeader);
+    const res = await apiClient.get(`/api/employee/role/${roleId}`);
     return res.data.map(mapEmployee);
   }
 
   async function fetchOnShift() {
-    const res = await axios.get(`${baseUrl}/api/employees/on-shift`, authHeader);
-    console.log(res.data);
+    const res = await apiClient.get('/api/employee/on-shift');
     return res.data.map(mapEmployee);
-    
-  } 
-  
+  }
+
+  async function searchEmployees(keyword) {
+    const res = await apiClient.get('/api/employee/search', { params: { keyword } });
+    return res.data.map(mapEmployee);
+  }
+
+  async function fetchStats() {
+    const res = await apiClient.get('/api/employee/stats');
+    return res.data;
+  }
+
   async function addEmployee(payload) {
-    const res = await axios.post(`${baseUrl}/api/employees`, payload, authHeader);
-    setEmployees((prev) => [...prev, mapEmployee(res.data)]);
+    await apiClient.post('/api/employee', payload);
+    await refreshEmployees();
   }
 
   async function updateEmployee(id, payload) {
-    const res = await axios.put(`${baseUrl}/api/employees/${id}`, payload, authHeader);
-    setEmployees((prev) => prev.map((e) => (e.id === id ? mapEmployee(res.data) : e)));
+    await apiClient.put(`/api/employee/${id}`, payload);
+    await refreshEmployees();
   }
 
-  async function deleteEmployee(id) {
-    await axios.delete(`${baseUrl}/api/employees/${id}`, authHeader);
-    setEmployees((prev) => prev.filter((e) => e.id !== id));
+  async function toggleStatus(id) {
+    await apiClient.patch(`/api/employee/${id}/toggle-status`);
+    await refreshEmployees();
   }
 
-
-  async function searchEmployees(keyword) {
-    const res = await axios.get(`${baseUrl}/api/employees/search`, {
-      params: { keyword },
-      headers: authHeader.headers,
-    });
-    return res.data.map(mapEmployee);
-  }
-
-  const value = { employees, loading, error, addEmployee, updateEmployee, deleteEmployee , fetchByBranch ,fetchByRole , fetchOnShift , searchEmployees};
+  const value = {
+    employees, loading, error, refreshEmployees,
+    fetchByBranch, fetchByRole, fetchOnShift, searchEmployees, fetchStats,
+    addEmployee, updateEmployee, toggleStatus,
+  };
   return <EmployeesContext.Provider value={value}>{children}</EmployeesContext.Provider>;
 }
 

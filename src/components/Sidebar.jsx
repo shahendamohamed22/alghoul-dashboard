@@ -1,9 +1,8 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useModal } from '../context/ModalContext';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-// كل روابط النافيجيشن في array واحد بدل ما نكررهم 6 مرات في 6 صفحات
-// (ده كان أكبر مصدر للأخطاء في النسخة الأصلية: كل صفحة كانت بتعمل paste
-// للسايدبار وتنسى تشيل active من الرابط الصح أو تنسى نفس الـ icon)
 const navItems = [
   { to: '/', icon: 'fa-grid-vertical', label: 'Dashboard', end: true },
   { to: '/branches', icon: 'fa-shop', label: 'Branches' },
@@ -15,11 +14,6 @@ const navItems = [
   { to: '/pricing', icon: 'fa-tag', label: 'Pricing' },
 ];
 
-// isOpen و onClose جايين من الـ Layout (parent) - السايدبار نفسه معندوش state
-// بيعرف هو مفتوح ولا لأ. ده مبدأ مهم في React: الـ state بيعيش في أعلى نقطة
-// مشتركة بين العناصر اللي محتاجاها (هنا: Sidebar + الزرار اللي بيفتحها في Layout)
-// كل صفحة بتتوافق مع تاب معين في مودال الإضافة - عشان لو إنتي واقفة في صفحة
-// Store مثلًا ودست "Add New"، يفتح على تاب "Item" مباشرة بدل ما تدوري عليه
 const routeToTab = {
   '/branches': 'branch',
   '/store': 'item',
@@ -33,6 +27,9 @@ const routeToTab = {
 export default function Sidebar({ isOpen, onClose }) {
   const { openAdd } = useModal();
   const location = useLocation();
+
+  const { admin, logout } = useAuth();
+  const navigate = useNavigate();
 
   function handleAddNew() {
     const tab = routeToTab[location.pathname] || 'branch';
@@ -89,13 +86,23 @@ export default function Sidebar({ isOpen, onClose }) {
           >
             <i className="fa-solid fa-plus"></i> Add New
           </button>
-          <div className="d-flex align-items-center gap-2">
-            <div className="bg-brand-green text-white rounded-circle d-flex align-items-center justify-content-center fw-semibold"
-              style={{ width: 34, height: 34, fontSize: 13 }}>A</div>
-            <div>
-              <div className="small fw-semibold">Admin User</div>
-              <div className="text-muted" style={{ fontSize: 12 }}>Manager</div>
+          <div className="d-flex align-items-center justify-content-between gap-2">
+            <div className="d-flex align-items-center gap-2">
+              <div className="bg-brand-green text-white rounded-circle d-flex align-items-center justify-content-center fw-semibold"
+                style={{ width: 34, height: 34, fontSize: 13 }}>
+                {admin?.firstName?.[0] ?? 'A'}
+              </div>
+              <div>
+                <div className="small fw-semibold">{admin ? `${admin.firstName} ${admin.lastName}` : 'Admin User'}</div>
+                <div className="text-muted" style={{ fontSize: 12 }}>{admin?.email}</div>
+              </div>
             </div>
+            <i
+              className="fa-solid fa-right-from-bracket text-muted"
+              role="button"
+              title="تسجيل الخروج"
+              onClick={() => { logout(); navigate('/login'); }}
+            ></i>
           </div>
         </div>
       </div>

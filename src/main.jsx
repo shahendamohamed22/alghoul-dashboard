@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 
+import { AuthProvider } from './context/AuthContext.jsx'
 import { ModalProvider } from './context/ModalContext'
 import { BranchesProvider } from './context/BranchesContext'
 import { ItemsProvider } from './context/ItemsContext'
@@ -12,26 +13,29 @@ import { PricingProvider } from './context/PricingContext'
 import { OffersProvider } from './context/OffersContext'
 import { ProductsProvider } from './context/ProductsContext'
 
+
 // كل Provider بيلف اللي بعده - الترتيب مش مهم هنا لأن الـ contexts دي
 // مش معتمدة على بعض، كل واحد مستقل بذاته
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ModalProvider>
-      <BranchesProvider>
-        <ItemsProvider>
-          <EmployeesProvider>
-            <CustomersProvider>
-              <PricingProvider>
-                <OffersProvider>
-                  <ProductsProvider>
-                    <App />
-                  </ProductsProvider>
-                </OffersProvider>
-              </PricingProvider>
-            </CustomersProvider>
-          </EmployeesProvider>
-        </ItemsProvider>
-      </BranchesProvider>
-    </ModalProvider>
+    <AuthProvider>
+      <ModalProvider>
+        <BranchesProvider>
+          <ItemsProvider>
+            <EmployeesProvider>
+              <CustomersProvider>
+                <PricingProvider>
+                  <OffersProvider>
+                    <ProductsProvider>
+                      <App />
+                    </ProductsProvider>
+                  </OffersProvider>
+                </PricingProvider>
+              </CustomersProvider>
+            </EmployeesProvider>
+          </ItemsProvider>
+        </BranchesProvider>
+      </ModalProvider>
+    </AuthProvider>
   </StrictMode>,
 )

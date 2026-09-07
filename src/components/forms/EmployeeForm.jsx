@@ -16,8 +16,6 @@ export default function EmployeeForm({ initialData, onSubmit, onCancel, submitLa
 
   useEffect(() => {
     if (initialData) {
-      // initialData جاي من mapEmployee (فيه name, branch كنص, role كنص...)
-      // فبنـ"يترجمه" بالعكس هنا عشان الفورم يشتغل بالـ id/رقم
       const branch = branches.find((b) => b.name === initialData.branch);
       setForm({
         fullName: initialData.name || '',
@@ -36,14 +34,12 @@ export default function EmployeeForm({ initialData, onSubmit, onCancel, submitLa
 
   function handleChange(e) {
     const { name, value } = e.target;
-    // الحقول الرقمية (role, status, branchId) لازم تتحول لرقم فعلي، مش تفضل نص
     const numericFields = ['role', 'status', 'branchId'];
     setForm({ ...form, [name]: numericFields.includes(name) ? Number(value) : value });
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    // الـ workStart/workEnd الفورم بيرجعها "09:00"، والـ API عايزها "09:00:00"
     const payload = {
       fullName: form.fullName,
       phoneNumber: form.phoneNumber,
@@ -53,9 +49,7 @@ export default function EmployeeForm({ initialData, onSubmit, onCancel, submitLa
       workStart: form.workStart.length === 5 ? `${form.workStart}:00` : form.workStart,
       workEnd: form.workEnd.length === 5 ? `${form.workEnd}:00` : form.workEnd,
     };
-    // status بس بيتبعت لو بنعدل (الـ Create API مش طالبه أصلاً)
     if (initialData) payload.status = form.status;
-
     onSubmit(payload);
   }
 
@@ -64,7 +58,7 @@ export default function EmployeeForm({ initialData, onSubmit, onCancel, submitLa
       <div className="modal-body pt-0">
         <div className="mb-3">
           <label className="form-label small">Employee Name *</label>
-          <input className="form-control" name="fullName" placeholder="e.g. Alice Cooper" value={form.fullName} onChange={handleChange} required />
+          <input className="form-control" name="fullName" placeholder="e.g. Ahmed Ali" value={form.fullName} onChange={handleChange} required />
         </div>
         <div className="mb-3">
           <label className="form-label small">Email *</label>
@@ -100,7 +94,6 @@ export default function EmployeeForm({ initialData, onSubmit, onCancel, submitLa
             <label className="form-label small">Phone</label>
             <input className="form-control" name="phoneNumber" placeholder="01012345678" value={form.phoneNumber} onChange={handleChange} />
           </div>
-          {/* الـ status بيظهر بس وقت التعديل - الإضافة الجديدة بتتعمل Active افتراضيًا من السيرفر */}
           {initialData && (
             <div className="col-6 mb-3">
               <label className="form-label small">Status</label>
