@@ -7,6 +7,7 @@ import Employees from './pages/Employees';
 import Customers from './pages/Customers';
 import Pricing from './pages/Pricing';
 import Offers from './pages/Offers';
+import Products from './pages/Products';
 
 // كل "صفحة" في المشروع القديم (index.html, branches.html, ...) بقت "route"
 // جوه تطبيق واحد. الميزة: السايدبار (Layout) بيترسم مرة واحدة بس، ومش بيعمل
@@ -23,6 +24,7 @@ function App() {
           <Route path="/customers" element={<Customers />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/offers" element={<Offers />} />
+          <Route path="/products" element={<Products />} />
         </Routes>
       </Layout>
     </BrowserRouter>

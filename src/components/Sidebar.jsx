@@ -8,10 +8,11 @@ const navItems = [
   { to: '/', icon: 'fa-grid-vertical', label: 'Dashboard', end: true },
   { to: '/branches', icon: 'fa-shop', label: 'Branches' },
   { to: '/store', icon: 'fa-box-open', label: 'Store' },
+  { to: '/products', icon: 'fa-basket-shopping', label: 'Products' },
+  { to: '/offers', icon: 'fa-percent', label: 'Offers' },
   { to: '/employees', icon: 'fa-user-gear', label: 'Employees' },
   { to: '/customers', icon: 'fa-users', label: 'Customers' },
   { to: '/pricing', icon: 'fa-tag', label: 'Pricing' },
-  { to: '/offers', icon: 'fa-percent', label: 'Offers' },
 ];
 
 // isOpen و onClose جايين من الـ Layout (parent) - السايدبار نفسه معندوش state
@@ -26,6 +27,7 @@ const routeToTab = {
   '/customers': 'customer',
   '/pricing': 'price',
   '/offers': 'offer',
+  '/products': 'product',
 };
 
 export default function Sidebar({ isOpen, onClose }) {

@@ -5,6 +5,7 @@ import { useEmployees } from '../context/EmployeesContext';
 import { useCustomers } from '../context/CustomersContext';
 import { usePricing } from '../context/PricingContext';
 import { useOffers } from '../context/OffersContext';
+import { useProducts } from '../context/ProductsContext';
 
 import BranchForm from './forms/BranchForm';
 import ItemForm from './forms/ItemForm';
@@ -12,6 +13,7 @@ import EmployeeForm from './forms/EmployeeForm';
 import CustomerForm from './forms/CustomerForm';
 import PricingForm from './forms/PricingForm';
 import OfferForm from './forms/OfferForm';
+import ProductForm from './forms/ProductForm';
 
 // كل تاب بيعرف: اسمه، أيقونته، وأسماء أفعال الإضافة/التعديل بتاعته
 // (asAdd/asUpdate) - ده اللي بيخلي المودال الواحد ده "يعرف" يكلم أي Context صح
@@ -22,6 +24,7 @@ const tabs = [
   { key: 'customer', label: 'Customer', icon: 'fa-users' },
   { key: 'price', label: 'Price', icon: 'fa-tag' },
   { key: 'offer', label: 'Offer', icon: 'fa-percent' },
+  { key: 'product', label: 'Product', icon: 'fa-basket-shopping' },
 ];
 
 export default function AddNewModal() {
@@ -32,6 +35,7 @@ export default function AddNewModal() {
   const customersCtx = useCustomers();
   const pricingCtx = usePricing();
   const offersCtx = useOffers();
+  const productsCtx = useProducts();
 
   if (!isOpen) return null;
 
@@ -77,6 +81,12 @@ export default function AddNewModal() {
           title: 'Offer',
           Form: OfferForm,
           onSubmit: (data) => isEditing ? offersCtx.updateOffer(editing.data.id, data) : offersCtx.addOffer(data),
+        };
+      case 'product':
+        return {
+          title: 'Product',
+          Form: ProductForm,
+          onSubmit: (data) => isEditing ? productsCtx.updateProduct(editing.data.id, data) : productsCtx.addProduct(data),
         };
       default:
         return null;

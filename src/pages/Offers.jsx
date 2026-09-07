@@ -61,7 +61,7 @@ export default function Offers() {
     type: 'doughnut',
     data: {
       labels: ['نسبة مئوية', 'سعر باقة'],
-      datasets: [{ data: [typeDistribution.percentage, typeDistribution.package], backgroundColor: ['#1f6b4d', '#f0a93a'] }],
+      datasets: [{ data: [typeDistribution.percentage, typeDistribution.package], backgroundColor: ['#1f6b4d', '#16342c'] }],
     },
     options: { maintainAspectRatio: false, cutout: '60%' },
   };
