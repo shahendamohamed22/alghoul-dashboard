@@ -1,6 +1,6 @@
 import { useModal } from '../context/ModalContext';
 import { useBranches } from '../context/BranchesContext';
-import { useItems } from '../context/ItemsContext';
+import { useInventory } from '../context/InventoryContext';
 import { useEmployees } from '../context/EmployeesContext';
 import { useCustomers } from '../context/CustomersContext';
 import { usePricing } from '../context/PricingContext';
@@ -8,7 +8,7 @@ import { useOffers } from '../context/OffersContext';
 import { useProducts } from '../context/ProductsContext';
 
 import BranchForm from './forms/BranchForm';
-import ItemForm from './forms/ItemForm';
+import InventoryForm from './forms/InventoryForm';
 import EmployeeForm from './forms/EmployeeForm';
 import CustomerForm from './forms/CustomerForm';
 import PricingForm from './forms/PricingForm';
@@ -19,7 +19,7 @@ import ProductForm from './forms/ProductForm';
 // (asAdd/asUpdate) - ده اللي بيخلي المودال الواحد ده "يعرف" يكلم أي Context صح
 const tabs = [
   { key: 'branch', label: 'Branch', icon: 'fa-shop' },
-  { key: 'item', label: 'Item', icon: 'fa-box' },
+  { key: 'item', label: 'Inventory', icon: 'fa-box' },
   { key: 'employee', label: 'Employee', icon: 'fa-user-gear' },
   { key: 'customer', label: 'Customer', icon: 'fa-users' },
   { key: 'price', label: 'Price', icon: 'fa-tag' },
@@ -30,7 +30,7 @@ const tabs = [
 export default function AddNewModal() {
   const { isOpen, activeTab, setActiveTab, editing, close } = useModal();
   const branchesCtx = useBranches();
-  const itemsCtx = useItems();
+  const inventoryCtx = useInventory();
   const employeesCtx = useEmployees();
   const customersCtx = useCustomers();
   const pricingCtx = usePricing();
@@ -54,9 +54,11 @@ export default function AddNewModal() {
         };
       case 'item':
         return {
-          title: 'Item',
-          Form: ItemForm,
-          onSubmit: (data) => isEditing ? itemsCtx.updateItem(editing.data.id, data) : itemsCtx.addItem(data),
+          title: 'Inventory',
+          Form: InventoryForm,
+          onSubmit: (data) => isEditing
+            ? inventoryCtx.updateInventory(editing.data.productId, editing.data.branchId, data)
+            : inventoryCtx.addInventory(data),
         };
       case 'employee':
         return {
