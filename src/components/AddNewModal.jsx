@@ -16,8 +16,6 @@ import PricingForm from './forms/PricingForm';
 import OfferForm from './forms/OfferForm';
 import ProductForm from './forms/ProductForm';
 
-// كل تاب بيعرف: اسمه، أيقونته، وأسماء أفعال الإضافة/التعديل بتاعته
-// (asAdd/asUpdate) - ده اللي بيخلي المودال الواحد ده "يعرف" يكلم أي Context صح
 const tabs = [
   { key: 'admin', label: 'Admin', icon: 'fa-user-shield' },
   { key: 'branch', label: 'Branch', icon: 'fa-shop' },

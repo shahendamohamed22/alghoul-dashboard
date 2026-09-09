@@ -106,7 +106,7 @@ export default function Dashboard() {
         <>
           <div className="row">
             <div className="col-6 col-lg-3">
-              <div className="border border-1 rounded-3 shadow p-2">
+              <div className="border border-1 rounded-3 shadow p-3">
                 <div className="d-flex justify-content-between align-items-center">
                   <i className="fa-solid fa-dollar-sign fa-lg style-icon p-4 bg-brand-light text-brand-green"></i>
                   {formatChange(header?.revenueChangePercentage) && (
@@ -115,13 +115,13 @@ export default function Dashboard() {
                     </span>
                   )}
                 </div>
-                <h3 className="fs-1">${(header?.totalRevenue ?? 0).toLocaleString()}</h3>
+                <h3 className="fs-2 mt-1">${(header?.totalRevenue ?? 0).toLocaleString()}</h3>
                 <p className="text-secondary fs-6">Total Revenue</p>
               </div>
             </div>
 
             <div className="col-6 col-lg-3">
-              <div className="border border-1 rounded-3 shadow p-2">
+              <div className="border border-1 rounded-3 shadow p-3">
                 <div className="d-flex justify-content-between align-items-center">
                   <i className="fa-solid fa-bag-shopping fa-lg style-icon p-4 bg-brand-light text-brand-green"></i>
                   {formatChange(header?.ordersChangePercentage) && (
@@ -130,13 +130,13 @@ export default function Dashboard() {
                     </span>
                   )}
                 </div>
-                <h3 className="fs-1">{header?.totalOrders ?? 0}</h3>
+                <h3 className="fs-2 mt-1">{header?.totalOrders ?? 0}</h3>
                 <p className="text-secondary fs-6">Total Orders</p>
               </div>
             </div>
 
             <div className="col-6 col-lg-3">
-              <div className="border border-1 rounded-3 shadow p-2">
+              <div className="border border-1 rounded-3 shadow p-3">
                 <div className="d-flex justify-content-between align-items-center">
                   <i className="fa-solid fa-users fa-lg style-icon p-4 bg-brand-light text-brand-green"></i>
                   {formatChange(header?.customersChangePercentage) && (
@@ -145,13 +145,13 @@ export default function Dashboard() {
                     </span>
                   )}
                 </div>
-                <h3 className="fs-1">{header?.activeCustomers ?? 0}</h3>
+                <h3 className="fs-2 mt-1">{header?.activeCustomers ?? 0}</h3>
                 <p className="text-secondary fs-6">Active Customers</p>
               </div>
             </div>
 
             <div className="col-6 col-lg-3">
-              <div className="border border-1 rounded-3 shadow p-2">
+              <div className="border border-1 rounded-3 shadow p-3">
                 <div className="d-flex justify-content-between align-items-center">
                   <i className="fa-solid fa-credit-card fa-lg style-icon p-4 bg-brand-light text-brand-green"></i>
                   {formatChange(header?.avgOrderValueChangePercentage) && (
@@ -160,21 +160,22 @@ export default function Dashboard() {
                     </span>
                   )}
                 </div>
-                <h3 className="fs-1">${(header?.avgOrderValue ?? 0).toFixed(2)}</h3>
+                <h3 className="fs-2 mt-1">${(header?.avgOrderValue ?? 0).toFixed(2)}</h3>
                 <p className="text-secondary fs-6">Avg Order Value</p>
               </div>
             </div>
           </div>
 
           <div className="row mt-5 align-items-center">
-            <div className="col-lg-7">
-              <div className="revenueChart w-100 border border-1 rounded-4 p-3 shadow h-100">
+            <div className="col-lg-6">
+              <div className="revenueChart w-100 border border-1 rounded-4 p-3 shadow h-100"
+                style={{ height: 240 }}>
                 <ChartCanvas config={revenueChartConfig} />
               </div>
             </div>
-            <div className="col-lg-5">
+            <div className="col-lg-6">
               <div className="d-flex align-items-center justify-content-center gap-3 w-100 border border-1 rounded-4 p-4 shadow h-100 flex-wrap">
-                <div style={{ width: 140, height: 140 }}>
+                <div style={{ width: 240 }}>
                   <ChartCanvas config={categoryChartConfig} />
                 </div>
                 <Legend items={categoryData} />

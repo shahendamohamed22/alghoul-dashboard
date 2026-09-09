@@ -16,8 +16,6 @@ import { BrandsProvider } from './context/BrandsContext'
 import { InventoryProvider } from './context/InventoryContext'
 
 
-// كل Provider بيلف اللي بعده - الترتيب مش مهم هنا لأن الـ contexts دي
-// مش معتمدة على بعض، كل واحد مستقل بذاته
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>

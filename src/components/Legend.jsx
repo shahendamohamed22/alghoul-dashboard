@@ -1,6 +1,3 @@
-// نفس نمط الـ "ارسمي ul من array" اللي كان بيتكرر يدوي (CategoryLegend, stockValueLegend,
-// scheduleLegend, priceTierLegend...) - هنا بقى component واحد بياخد data وشكل (layout)
-// ويرسم نفس الشكل. لو عاوزة تضيفي شارت جديد وليجند تحته، استخدمي ده بدل ما تكرري الكود.
 export default function Legend({ items, layout = 'column' }) {
   const wrapperClass =
     layout === 'row'

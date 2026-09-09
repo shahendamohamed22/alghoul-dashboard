@@ -2,11 +2,6 @@ import { createContext, useContext, useState } from 'react';
 
 const ModalContext = createContext(null);
 
-// المودال ده واحد بس بيتشارك بين كل الصفحات (Branch, Item, Employee, Customer, Price).
-// بدل ما يبقى عندنا 5 modals منفصلين، عندنا حالة واحدة بتقول:
-// - هل هو مفتوح؟
-// - أنهي تاب مختار دلوقتي (branch / item / employee / customer / price)؟
-// - إحنا في وضع "إضافة" (editing = null) ولا "تعديل" (editing فيها بيانات)؟
 export function ModalProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('branch');
