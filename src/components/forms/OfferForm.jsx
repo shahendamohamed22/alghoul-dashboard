@@ -98,7 +98,7 @@ export default function OfferForm({ initialData, onSubmit, onCancel, submitLabel
       </div>
       <div className="modal-footer border-0">
         <button type="button" className="btn btn-outline-secondary" onClick={onCancel}>إلغاء</button>
-        <button type="submit" className="btn bg-brand-dark text-white">{submitLabel}</button>
+        <button type="submit" className="btn bg-brand-dark text-white ms-2">{submitLabel}</button>
       </div>
     </form>
   );

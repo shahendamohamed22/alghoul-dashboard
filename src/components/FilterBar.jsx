@@ -1,8 +1,4 @@
-// ده كان أكبر تكرار في المشروع الأصلي: كل صفحة (store.js, employees.js, customers.js,
-// pricing.js) كانت بتكرر نفس المنطق بالظبط - primaryFilter + secondaryFilter + دالة
-// بترسم أزرار الفلتر الفرعي وتربطها بـ event listener. في React، المنطق ده كله بيبقى
-// "declarative": إنتي بس بتقوليله "دي الخيارات المتاحة دلوقتي" وهو بيرسمها، مفيش
-// addEventListener يدوي ولا innerHTML.
+
 export default function FilterBar({
   primaryOptions,       // [{ value: 'all', label: 'All Items' }, ...]
   primaryFilter,

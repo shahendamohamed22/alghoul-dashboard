@@ -40,7 +40,13 @@ export function AuthProvider({ children }) {
     setAdmin(null);
   }
 
-  const value = { admin, isAuthenticated, login, logout, error, loading };
+  async function addAdmin(data) {
+    await axios.post(`${baseUrl}/api/admin/auth/add`, data, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` },
+    });
+  }
+
+const value = { admin, isAuthenticated, login, logout, addAdmin, error, loading };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

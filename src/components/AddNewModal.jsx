@@ -1,3 +1,4 @@
+import { useAuth } from '../context/AuthContext';
 import { useModal } from '../context/ModalContext';
 import { useBranches } from '../context/BranchesContext';
 import { useInventory } from '../context/InventoryContext';
@@ -7,10 +8,10 @@ import { usePricing } from '../context/PricingContext';
 import { useOffers } from '../context/OffersContext';
 import { useProducts } from '../context/ProductsContext';
 
+import AdminForm from './forms/AdminForm';
 import BranchForm from './forms/BranchForm';
 import InventoryForm from './forms/InventoryForm';
 import EmployeeForm from './forms/EmployeeForm';
-import CustomerForm from './forms/CustomerForm';
 import PricingForm from './forms/PricingForm';
 import OfferForm from './forms/OfferForm';
 import ProductForm from './forms/ProductForm';
@@ -18,10 +19,10 @@ import ProductForm from './forms/ProductForm';
 // كل تاب بيعرف: اسمه، أيقونته، وأسماء أفعال الإضافة/التعديل بتاعته
 // (asAdd/asUpdate) - ده اللي بيخلي المودال الواحد ده "يعرف" يكلم أي Context صح
 const tabs = [
+  { key: 'admin', label: 'Admin', icon: 'fa-user-shield' },
   { key: 'branch', label: 'Branch', icon: 'fa-shop' },
   { key: 'item', label: 'Inventory', icon: 'fa-box' },
   { key: 'employee', label: 'Employee', icon: 'fa-user-gear' },
-  { key: 'customer', label: 'Customer', icon: 'fa-users' },
   { key: 'price', label: 'Price', icon: 'fa-tag' },
   { key: 'offer', label: 'Offer', icon: 'fa-percent' },
   { key: 'product', label: 'Product', icon: 'fa-basket-shopping' },
@@ -36,6 +37,7 @@ export default function AddNewModal() {
   const pricingCtx = usePricing();
   const offersCtx = useOffers();
   const productsCtx = useProducts();
+  const { addAdmin } = useAuth();
 
   if (!isOpen) return null;
 
@@ -90,6 +92,12 @@ export default function AddNewModal() {
           Form: ProductForm,
           onSubmit: (data) => isEditing ? productsCtx.updateProduct(editing.data.id, data) : productsCtx.addProduct(data),
         };
+      case 'admin':
+        return {
+          title: 'Admin',
+          Form: AdminForm,
+          onSubmit: (data) => addAdmin(data),
+        };
       default:
         return null;
     }
@@ -112,7 +120,7 @@ export default function AddNewModal() {
 
           {/* التابز بتظهر بس لما بنضيف - في وضع التعديل النوع محدد أصلاً */}
           {!isEditing && (
-            <div className="d-flex gap-2 px-3 pb-3 flex-wrap">
+            <div className="d-flex gap-2 px-3 pb-3 flex-wrap mt-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.key}

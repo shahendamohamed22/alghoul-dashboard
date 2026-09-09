@@ -106,7 +106,7 @@ export default function EmployeeForm({ initialData, onSubmit, onCancel, submitLa
       </div>
       <div className="modal-footer border-0">
         <button type="button" className="btn btn-outline-secondary" onClick={onCancel}>Cancel</button>
-        <button type="submit" className="btn bg-brand-dark text-white">{submitLabel}</button>
+        <button type="submit" className="btn bg-brand-dark text-white ms-2">{submitLabel}</button>
       </div>
     </form>
   );
